@@ -20,30 +20,37 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="怕什么真理无穷,进一步有进一步的欢喜">
-<meta property="og:type" content="website">
-<meta property="og:title" content="aryangzhu">
-<meta property="og:url" content="http://example.com/index.html">
+  <meta name="description" content="数据结构和对象概述字符串SDC(Simple Dynamic String,简单动态字符串)作为字符串表示每个sds.h&#x2F;sdshdr结构表示一个SDS值   1234567891011struct sdshdr&#123;      &#x2F;&#x2F;记录buf数组中已使用字节的数量    &#x2F;&#x2F;等于SDS所保存字符串的长度    int len;    &#x2F;&#x2F;记录buf数组中未使用字节的数量    i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis设计与实现读书笔记">
+<meta property="og:url" content="http://example.com/2024/11/26/Redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="aryangzhu">
-<meta property="og:description" content="怕什么真理无穷,进一步有进一步的欢喜">
+<meta property="og:description" content="数据结构和对象概述字符串SDC(Simple Dynamic String,简单动态字符串)作为字符串表示每个sds.h&#x2F;sdshdr结构表示一个SDS值   1234567891011struct sdshdr&#123;      &#x2F;&#x2F;记录buf数组中已使用字节的数量    &#x2F;&#x2F;等于SDS所保存字符串的长度    int len;    &#x2F;&#x2F;记录buf数组中未使用字节的数量    i">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/aryangzhu/blogImage/master/%E6%88%AA%E5%B1%8F2023-04-04%20%E4%B8%8B%E5%8D%883.34.26.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/aryangzhu/blogImage/master/%E6%88%AA%E5%B1%8F2023-04-05%20%E4%B8%8A%E5%8D%8810.16.54.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/aryangzhu/blogImage/master/%E6%88%AA%E5%B1%8F2023-04-07%20%E4%B8%8B%E5%8D%882.26.03.png">
+<meta property="article:published_time" content="2024-11-26T13:30:31.000Z">
+<meta property="article:modified_time" content="2024-11-26T13:58:19.372Z">
 <meta property="article:author" content="aryangzhu">
+<meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/aryangzhu/blogImage/master/%E6%88%AA%E5%B1%8F2023-04-04%20%E4%B8%8B%E5%8D%883.34.26.png">
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2024/11/26/Redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E7%AC%94%E8%AE%B0/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>aryangzhu</title>
+  <title>Redis设计与实现读书笔记 | aryangzhu</title>
   
 
 
@@ -151,9 +158,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -169,10 +177,9 @@
       <meta itemprop="name" content="aryangzhu">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/26/Redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">Redis设计与实现读书笔记</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          Redis设计与实现读书笔记
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -205,7 +212,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="数据结构和对象"><a href="#数据结构和对象" class="headerlink" title="数据结构和对象"></a>数据结构和对象</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><h3 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h3><h4 id="SDC-Simple-Dynamic-String-简单动态字符串-作为字符串表示"><a href="#SDC-Simple-Dynamic-String-简单动态字符串-作为字符串表示" class="headerlink" title="SDC(Simple Dynamic String,简单动态字符串)作为字符串表示"></a>SDC(Simple Dynamic String,简单动态字符串)作为字符串表示</h4><p>每个sds.h&#x2F;sdshdr结构表示一个SDS值  </p>
+        <h2 id="数据结构和对象"><a href="#数据结构和对象" class="headerlink" title="数据结构和对象"></a>数据结构和对象</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><h3 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h3><h4 id="SDC-Simple-Dynamic-String-简单动态字符串-作为字符串表示"><a href="#SDC-Simple-Dynamic-String-简单动态字符串-作为字符串表示" class="headerlink" title="SDC(Simple Dynamic String,简单动态字符串)作为字符串表示"></a>SDC(Simple Dynamic String,简单动态字符串)作为字符串表示</h4><p>每个sds.h&#x2F;sdshdr结构表示一个SDS值  </p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span>&#123;</span>  </span><br><span class="line">    <span class="comment">//记录buf数组中已使用字节的数量</span></span><br><span class="line">    <span class="comment">//等于SDS所保存字符串的长度</span></span><br><span class="line">    <span class="type">int</span> len;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//记录buf数组中未使用字节的数量</span></span><br><span class="line">    <span class="type">int</span> <span class="built_in">free</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//字节数组，用于保存字符串</span></span><br><span class="line">    <span class="type">char</span> buf[]; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h5 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h5><ol>
 <li>常数复杂度获取字符串长度<br>数据结构中有len属性用于保存字符串的长度</li>
@@ -279,260 +286,33 @@
 <h5 id="Redis中的IO多路复用"><a href="#Redis中的IO多路复用" class="headerlink" title="Redis中的IO多路复用"></a>Redis中的IO多路复用</h5><h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><p>主要内容是服务器内部保存的redis-client结构,对其中的的属性进行讲解</p>
 <h4 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h4><h2 id="一点碎碎念"><a href="#一点碎碎念" class="headerlink" title="一点碎碎念"></a>一点碎碎念</h2><p>最近因为面试，所以又拿出了《Redis设计与实现》这本书出来复习，其实23年的时候就已经刷过一遍这本书了，但是没有做笔记，今年发现做笔记和不做笔记差别还是挺大的。这两天也不想去复盘之前的面试(畏难心理还是已经皮实了，不想再继续下去了)，索性就写写笔记，当做一种娱乐了。</p>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+          </div>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/20/%E5%8A%A0%E5%AF%86%E8%B4%A7%E5%B8%81%E4%BA%A4%E6%98%93%E5%AD%A6%E4%B9%A0/">
+        
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="aryangzhu">
-      <meta itemprop="description" content="怕什么真理无穷,进一步有进一步的欢喜">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="aryangzhu">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/11/20/%E5%8A%A0%E5%AF%86%E8%B4%A7%E5%B8%81%E4%BA%A4%E6%98%93%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">加密货币交易学习</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-11-20 16:43:35" itemprop="dateCreated datePublished" datetime="2024-11-20T16:43:35+08:00">2024-11-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-26 21:32:46" itemprop="dateModified" datetime="2024-11-26T21:32:46+08:00">2024-11-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E4%BA%A4%E6%98%93/" itemprop="url" rel="index"><span itemprop="name">交易</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="交易的资金管理"><a href="#交易的资金管理" class="headerlink" title="交易的资金管理"></a>交易的资金管理</h2><p>来自于B站视频，推荐的每次投资额为总资金成本低的1%，准备实践一下。</p>
-<h2 id="赚币"><a href="#赚币" class="headerlink" title="赚币"></a>赚币</h2><h3 id="简单赚币"><a href="#简单赚币" class="headerlink" title="简单赚币"></a>简单赚币</h3><p>这种类似于债券，收益率低，但是风险小。</p>
-<h3 id="结构化产品"><a href="#结构化产品" class="headerlink" title="结构化产品"></a>结构化产品</h3>
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/11/20/%E5%8A%A0%E5%AF%86%E8%B4%A7%E5%B8%81%E4%BA%A4%E6%98%93%E5%AD%A6%E4%B9%A0/" rel="prev" title="加密货币交易学习">
+      <i class="fa fa-chevron-left"></i> 加密货币交易学习
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/03/Caffine-Redi%E5%AE%9E%E7%8E%B0%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="aryangzhu">
-      <meta itemprop="description" content="怕什么真理无穷,进一步有进一步的欢喜">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="aryangzhu">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/08/03/Caffine-Redi%E5%AE%9E%E7%8E%B0%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98/" class="post-title-link" itemprop="url">Caffine+Redi实现二级缓存</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-08-03 08:21:09" itemprop="dateCreated datePublished" datetime="2024-08-03T08:21:09+08:00">2024-08-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-08-11 16:30:12" itemprop="dateModified" datetime="2024-08-11T16:30:12+08:00">2024-08-11</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BC%93%E5%AD%98/" itemprop="url" rel="index"><span itemprop="name">缓存</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="本地缓存和分布式缓存"><a href="#本地缓存和分布式缓存" class="headerlink" title="本地缓存和分布式缓存"></a>本地缓存和分布式缓存</h2><p>本地缓存顾名思义就是和程序运行在同一台机器上的缓存,而分布式缓存则指的就是运行在多台机器上的缓存,这么讲只是狭义的理解。</p>
-<h2 id="本地缓存的适用场景"><a href="#本地缓存的适用场景" class="headerlink" title="本地缓存的适用场景"></a>本地缓存的适用场景</h2><p>适合存储一些不会经常改变的数据</p>
-<h2 id="分布式缓存的适用场景"><a href="#分布式缓存的适用场景" class="headerlink" title="分布式缓存的适用场景"></a>分布式缓存的适用场景</h2><p>分布式缓存一般服务分布式服务的业务场景中,但是又不止局限于用作缓存,拿Redis来说举例,项目中需要统计各个站点的流量使用情况,但是有没有必要存储到数据库中,而只是用来展示</p>
-<h2 id="为什么需要二级缓存甚至三级缓存"><a href="#为什么需要二级缓存甚至三级缓存" class="headerlink" title="为什么需要二级缓存甚至三级缓存"></a>为什么需要二级缓存甚至三级缓存</h2><p>我个人理解多级缓存的出现是为了服务于对接口响应速度有要求的接口,例如c端的查询接口,Redis也是有开销的。项目的考试业务中有缓存预先存储,然后正式考试再将学生和试卷出题进行绑定,学生请求组卷这个接口的请求时间要求响应要非常快。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/02/Canal%E5%AE%9E%E8%B7%B5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="aryangzhu">
-      <meta itemprop="description" content="怕什么真理无穷,进一步有进一步的欢喜">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="aryangzhu">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/08/02/Canal%E5%AE%9E%E8%B7%B5/" class="post-title-link" itemprop="url">Canal实践</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-08-02 23:44:10" itemprop="dateCreated datePublished" datetime="2024-08-02T23:44:10+08:00">2024-08-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-08-27 22:19:33" itemprop="dateModified" datetime="2024-08-27T22:19:33+08:00">2024-08-27</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/" itemprop="url" rel="index"><span itemprop="name">数据同步</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>业务场景是需要通过Canal来同步业务和报表的数据,业务使用的是PoloarDB而报表使用的是阿里云RDS,并且使用DBLE进行了分库分表,生产中总会有丢失数据的情况出现,所以本篇文章对排查过程进行了复盘并且提出解决方案</p>
-<h2 id="排查"><a href="#排查" class="headerlink" title="排查"></a>排查</h2><h3 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h3><p>1.DBLE日志</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2024-08-23 00:25:41.325  INFO [0-Timer] (com.actiontech.dble.net.connection.AbstractConnection.closeImmediatelyInner(AbstractConnection.java:184)) - connection <span class="built_in">id</span> close <span class="keyword">for</span> reason [idle <span class="built_in">timeout</span>] with connection FrontendConnection[<span class="built_in">id</span> = 26297 port = 8066 host = 192.168.1.60 local_port = 56895 isManager = <span class="literal">false</span> startupTime = 1724343341027 skipCheck = <span class="literal">false</span> isFlowControl = <span class="literal">false</span> onlyTcpConnect = <span class="literal">false</span> ssl = no]</span><br></pre></td></tr></table></figure>
-<p>没有有效信息<br>2. canal-server日志</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2024-08-23 17:22:10.731 - clientId:1001 cursor:[mysql-bin.000387,356893408,1724404930000,1,] address[192.168.1.48/192.168.1.48:3306]</span><br></pre></td></tr></table></figure>
-<p>也没有有效信息<br>3. canal-adapter日志  </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">synfail but ack...</span><br></pre></td></tr></table></figure>
-<p>日志已经找不到了,但是大意是这样,从中可以知道同步失败但是向server发送了确认消息。  </p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="DTLE-JOB"><a href="#DTLE-JOB" class="headerlink" title="DTLE JOB"></a>DTLE JOB</h3><h4 id="为什么用"><a href="#为什么用" class="headerlink" title="为什么用"></a>为什么用</h4><p>不知道,市面上没有看到其他主流的用来解决这个问题的方案,同时我也很难想到更好的方案去解决数据丢失的问题</p>
-<h4 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h4><p><img src="https://raw.githubusercontent.com/aryangzhu/blogImage/master/dtle%E6%9E%B6%E6%9E%84.png"><br><strong>DTLE架构上包含两种角色的进程，Agent角色与Manager角色</strong>。Manager角色主要负责元数据信息存储，任务的接收和分发，Agent节点健康状态检测、故障转移。Agent主要负责数据读取，binlog解析，数据筛选、压缩、传输、回放等。</p>
-<h4 id="文件结构"><a href="#文件结构" class="headerlink" title="文件结构"></a>文件结构</h4><h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><h5 id="1-全局配置"><a href="#1-全局配置" class="headerlink" title="1. 全局配置"></a>1. 全局配置</h5><h5 id="2-配置dtle-job"><a href="#2-配置dtle-job" class="headerlink" title="2. 配置dtle job"></a>2. 配置dtle job</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">job <span class="string">&quot;tr_exam_answer&quot;</span> &#123;</span><br><span class="line">  datacenters = [<span class="string">&quot;dc1&quot;</span>]</span><br><span class="line"></span><br><span class="line">  group <span class="string">&quot;src&quot;</span> &#123;</span><br><span class="line">    task <span class="string">&quot;src&quot;</span> &#123;</span><br><span class="line">      driver = <span class="string">&quot;dtle&quot;</span></span><br><span class="line">      config &#123;</span><br><span class="line">        ReplicateDoDb = [&#123;</span><br><span class="line">          TableSchema = <span class="string">&quot;cloud_exam&quot;</span></span><br><span class="line">	  TableSchemaRename = <span class="string">&quot;cloud_report&quot;</span></span><br><span class="line">          Tables = [&#123;</span><br><span class="line">            TableName = <span class="string">&quot;tr_exam_answer&quot;</span></span><br><span class="line">	    ColumnMapFrom = [<span class="string">&quot;id&quot;</span>,<span class="string">&quot;exam_id&quot;</span>,<span class="string">&quot;account_id&quot;</span>,<span class="string">&quot;training_project_id&quot;</span>,<span class="string">&quot;start_time&quot;</span>,<span class="string">&quot;submit_time&quot;</span>,<span class="string">&quot;duration&quot;</span>,<span class="string">&quot;terminal_type&quot;</span>,<span class="string">&quot;score&quot;</span>,<span class="string">&quot;create_time&quot;</span>,<span class="string">&quot;create_by_id&quot;</span>,<span class="string">&quot;create_by_name&quot;</span>,<span class="string">&quot;update_time&quot;</span>,<span class="string">&quot;update_by_id&quot;</span>,<span class="string">&quot;update_by_name&quot;</span>,<span class="string">&quot;company_id&quot;</span>,<span class="string">&quot;org_id&quot;</span>,<span class="string">&quot;site_id&quot;</span>,<span class="string">&quot;state&quot;</span>]</span><br><span class="line">            Where = <span class="string">&quot;company_id is not null&quot;</span></span><br><span class="line">          &#125;]</span><br><span class="line">        &#125;]</span><br><span class="line">        GroupMaxSize = 1024 <span class="comment"># in bytes, not number of transactions</span></span><br><span class="line">        GroupTimeout = 100  <span class="comment"># in ms</span></span><br><span class="line">        DropTableIfExists = <span class="literal">false</span></span><br><span class="line">        Gtid = <span class="string">&quot;&quot;</span></span><br><span class="line">        ChunkSize = 2000</span><br><span class="line">        SrcConnectionConfig = &#123;</span><br><span class="line">          Host = <span class="string">&quot;192.168.1.48&quot;</span></span><br><span class="line">          Port = 3306</span><br><span class="line">          User = <span class="string">&quot;xxx&quot;</span></span><br><span class="line">          Password = <span class="string">&quot;xxx&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">		DestConnectionConfig = &#123;</span><br><span class="line">          Host = <span class="string">&quot;127.0.0.1&quot;</span></span><br><span class="line">          Port = 8066</span><br><span class="line">          User = <span class="string">&quot;xxx&quot;</span></span><br><span class="line">          Password = <span class="string">&quot;xxx&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    restart &#123; <span class="comment"># group or task level</span></span><br><span class="line">      interval = <span class="string">&quot;10m&quot;</span></span><br><span class="line">      attempts = 3</span><br><span class="line">      delay    = <span class="string">&quot;15s&quot;</span></span><br><span class="line">      mode     = <span class="string">&quot;delay&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  group <span class="string">&quot;dest&quot;</span> &#123;</span><br><span class="line">    task <span class="string">&quot;dest&quot;</span> &#123;</span><br><span class="line">      driver = <span class="string">&quot;dtle&quot;</span></span><br><span class="line">      config &#123;</span><br><span class="line">        DestType = <span class="string">&quot;mysql&quot;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># For a kafka job, do not set ConnectionConfig in dest task. Set KafkaConfig instead.</span></span><br><span class="line">        <span class="comment">#KafkaConfig = &#123;</span></span><br><span class="line">        <span class="comment">#  Topic = &quot;kafka1&quot;</span></span><br><span class="line">        <span class="comment">#  Brokers = [&quot;127.0.0.1:9192&quot;, &quot;127.0.0.1:9092&quot;]</span></span><br><span class="line">        <span class="comment">#  Converter = &quot;json&quot;</span></span><br><span class="line">        <span class="comment">#&#125;</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    restart &#123; <span class="comment"># group or task level</span></span><br><span class="line">      interval = <span class="string">&quot;30m&quot;</span></span><br><span class="line">      attempts = 3</span><br><span class="line">      delay    = <span class="string">&quot;15s&quot;</span></span><br><span class="line">      mode     = <span class="string">&quot;delay&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  reschedule &#123;</span><br><span class="line">    <span class="comment"># By default, nomad will unlimitedly reschedule a failed task.</span></span><br><span class="line">    <span class="comment"># We limit it to once per 30min here.</span></span><br><span class="line">    attempts = 1</span><br><span class="line">    interval = <span class="string">&quot;30m&quot;</span></span><br><span class="line">    unlimited = <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>之前公司的大佬用了dtle job来做数据的补发,每次发现缺数据之后,跑一下dtle的脚本来同步一下增量数据  </p>
-<h5 id="3-任务脚本"><a href="#3-任务脚本" class="headerlink" title="3. 任务脚本"></a>3. 任务脚本</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$1</span></span><br><span class="line"><span class="keyword">for</span> file <span class="keyword">in</span> `<span class="built_in">ls</span> <span class="variable">$1</span>`</span><br><span class="line">  <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$&#123;file##*.&#125;</span>&quot;</span> = <span class="string">&quot;hcl&quot;</span> ];</span><br><span class="line">    <span class="keyword">then</span></span><br><span class="line">      <span class="built_in">echo</span> <span class="variable">$1</span>/<span class="variable">$file</span></span><br><span class="line">      ./nomad_run.sh <span class="variable">$1</span>/<span class="variable">$file</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">  <span class="keyword">done</span></span><br></pre></td></tr></table></figure>
-<p><strong>写在结尾</strong><br>目前这套方案还是有问题,因为业务库的表采用了分表,但是报表库由于时创建的时候就确定了分库分表的规则,并且两边采用的策略或者说分片键不同,导致数据无法同步,所以放弃了现在这套同步方案转而采用FlinkCDC来完成数据同步。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
   
 
 
@@ -585,6 +365,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.</span> <span class="nav-text">数据结构和对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.2.</span> <span class="nav-text">字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SDC-Simple-Dynamic-String-%E7%AE%80%E5%8D%95%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2-%E4%BD%9C%E4%B8%BA%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A1%A8%E7%A4%BA"><span class="nav-number">1.2.1.</span> <span class="nav-text">SDC(Simple Dynamic String,简单动态字符串)作为字符串表示</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BC%98%E5%8A%BF"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">优势</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SDS%E9%80%9A%E8%BF%87%E4%B8%A4%E7%A7%8D%E7%AD%96%E7%95%A5%E6%9D%A5%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">SDS通过两种策略来实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8"><span class="nav-number">1.3.</span> <span class="nav-text">链表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.3.1.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E6%80%A7"><span class="nav-number">1.3.2.</span> <span class="nav-text">特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E9%80%94"><span class="nav-number">1.3.3.</span> <span class="nav-text">用途</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E5%85%B8"><span class="nav-number">1.4.</span> <span class="nav-text">字典</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E8%A1%A8%E8%8A%82%E7%82%B9%E4%B8%8E%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.4.1.</span> <span class="nav-text">哈希表节点与哈希表数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%94%AE%E5%80%BC%E8%8A%82%E7%82%B9%E7%BB%93%E6%9E%84"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">键值节点结构</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">哈希表结构</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AD%97%E5%85%B8%E7%BB%93%E6%9E%84"><span class="nav-number">1.4.1.3.</span> <span class="nav-text">字典结构</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95"><span class="nav-number">1.4.2.</span> <span class="nav-text">哈希算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E9%94%AE%E5%86%B2%E7%AA%81-%E5%93%88%E5%B8%8C%E5%86%B2%E7%AA%81"><span class="nav-number">1.4.3.</span> <span class="nav-text">解决键冲突(哈希冲突)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rehash-%E9%87%8D%E6%96%B0%E6%95%A3%E5%88%97"><span class="nav-number">1.4.4.</span> <span class="nav-text">rehash(重新散列)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8Frehash"><span class="nav-number">1.4.5.</span> <span class="nav-text">渐进式rehash</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%B3%E8%B7%83%E8%A1%A8"><span class="nav-number">1.5.</span> <span class="nav-text">跳跃表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.5.1.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E6%95%B0%E9%9B%86%E5%90%88"><span class="nav-number">1.6.</span> <span class="nav-text">整数集合</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%87%E7%BA%A7"><span class="nav-number">1.6.1.</span> <span class="nav-text">升级</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8"><span class="nav-number">1.7.</span> <span class="nav-text">压缩列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.8.</span> <span class="nav-text">对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5%E7%A7%8D%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.8.1.</span> <span class="nav-text">5种基本类型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E7%B1%BB%E5%9E%8B%E7%9A%84%E7%BC%96%E7%A0%81%E6%96%B9%E5%BC%8F"><span class="nav-number">1.8.1.1.</span> <span class="nav-text">不同类型的编码方式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%9F%A5"><span class="nav-number">1.8.1.2.</span> <span class="nav-text">类型检查</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6"><span class="nav-number">1.8.1.3.</span> <span class="nav-text">内存回收机制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E5%85%B1%E4%BA%AB"><span class="nav-number">1.8.1.4.</span> <span class="nav-text">内存共享</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A9%BA%E8%BD%AC%E6%97%B6%E9%97%B4"><span class="nav-number">1.8.1.5.</span> <span class="nav-text">空转时间</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E6%9C%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.9.</span> <span class="nav-text">单机数据库的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.9.1.</span> <span class="nav-text">选择数据库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E9%94%AE%E7%A9%BA%E9%97%B4"><span class="nav-number">1.9.2.</span> <span class="nav-text">数据库键空间</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E9%94%AE%E5%80%BC%E5%8F%98%E5%8C%96%E6%97%B6%E7%9A%84%E6%93%8D%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="nav-number">1.9.2.1.</span> <span class="nav-text">关于键值变化时的操作过程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%94%9F%E5%AD%98%E6%88%96%E8%80%85%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4"><span class="nav-number">1.9.2.2.</span> <span class="nav-text">设置生存或者过期时间</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDB%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">1.9.3.</span> <span class="nav-text">RDB持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#SAVE%E5%92%8CBGSAVE"><span class="nav-number">1.9.3.1.</span> <span class="nav-text">SAVE和BGSAVE</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Mac%E4%B8%8B%E4%BD%BF%E7%94%A8Homebrew%E5%AE%89%E8%A3%85%E7%9A%84Redis%E7%9A%84RDB%E6%96%87%E4%BB%B6%E4%BD%8D%E7%BD%AE"><span class="nav-number">1.9.3.2.</span> <span class="nav-text">Mac下使用Homebrew安装的Redis的RDB文件位置</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">1.9.4.</span> <span class="nav-text">AOF持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#AOF%E7%BC%93%E5%86%B2%E5%8C%BA"><span class="nav-number">1.9.4.1.</span> <span class="nav-text">AOF缓冲区</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%87%8D%E5%86%99"><span class="nav-number">1.9.4.2.</span> <span class="nav-text">重写</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#AOF%E9%87%8D%E5%86%99%E7%BC%93%E5%86%B2%E5%8C%BA"><span class="nav-number">1.9.4.2.1.</span> <span class="nav-text">AOF重写缓冲区</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6"><span class="nav-number">1.9.5.</span> <span class="nav-text">事件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Redis%E4%B8%AD%E7%9A%84IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8"><span class="nav-number">1.9.5.1.</span> <span class="nav-text">Redis中的IO多路复用</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">1.9.6.</span> <span class="nav-text">客户端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="nav-number">1.9.7.</span> <span class="nav-text">服务端</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E7%82%B9%E7%A2%8E%E7%A2%8E%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">一点碎碎念</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
