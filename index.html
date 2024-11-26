@@ -157,6 +157,155 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/26/Redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="aryangzhu">
+      <meta itemprop="description" content="怕什么真理无穷,进一步有进一步的欢喜">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="aryangzhu">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/11/26/Redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">Redis设计与实现读书笔记</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-11-26 21:30:31 / 修改时间：21:44:20" itemprop="dateCreated datePublished" datetime="2024-11-26T21:30:31+08:00">2024-11-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%93%E5%AD%98/" itemprop="url" rel="index"><span itemprop="name">缓存</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="一点碎碎念"><a href="#一点碎碎念" class="headerlink" title="一点碎碎念"></a>一点碎碎念</h2><p>最近因为面试，所以又拿出了《Redis设计与实现》这本书出来复习，其实23年的时候就已经刷过一遍这本书了，但是没有做笔记，今年发现做笔记和不做笔记差别还是挺大的。这两天也不想去复盘之前的面试(畏难心理还是已经皮实了，不想再继续下去了)，索性就写写笔记，当做一种娱乐了。</p>
+<h2 id="第一部分-数据结构与对象"><a href="#第一部分-数据结构与对象" class="headerlink" title="第一部分 数据结构与对象"></a>第一部分 数据结构与对象</h2><h3 id="简单动态字符串-Simple-Dynamic-String"><a href="#简单动态字符串-Simple-Dynamic-String" class="headerlink" title="简单动态字符串(Simple Dynamic String)"></a>简单动态字符串(Simple Dynamic String)</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span>&#123;</span></span><br><span class="line">    <span class="comment">//记录buf数组中已使用字节的数量</span></span><br><span class="line">    <span class="comment">//等于SDS所保存字符串的长度</span></span><br><span class="line">    <span class="type">int</span> len;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//记录buf数组中未使用字节的数量</span></span><br><span class="line">    <span class="type">int</span> <span class="built_in">free</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//字节数组，用于保存字符串</span></span><br><span class="line">    <span class="type">char</span> buf[];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="C语言的缺陷-为什么要自己实现SDS"><a href="#C语言的缺陷-为什么要自己实现SDS" class="headerlink" title="C语言的缺陷(为什么要自己实现SDS)"></a>C语言的缺陷(为什么要自己实现SDS)</h4><ol>
+<li>常数级别的时间复杂度来获取字符串长度</li>
+<li>杜绝缓冲区溢出</li>
+<li>减少修改字符串带来的内存重新分配次数</li>
+</ol>
+<h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><h3 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h3><h3 id="跳跃表"><a href="#跳跃表" class="headerlink" title="跳跃表"></a>跳跃表</h3><h3 id="整数集合"><a href="#整数集合" class="headerlink" title="整数集合"></a>整数集合</h3><h3 id="压缩列表"><a href="#压缩列表" class="headerlink" title="压缩列表"></a>压缩列表</h3><h3 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h3>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/20/%E5%8A%A0%E5%AF%86%E8%B4%A7%E5%B8%81%E4%BA%A4%E6%98%93%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="aryangzhu">
+      <meta itemprop="description" content="怕什么真理无穷,进一步有进一步的欢喜">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="aryangzhu">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/11/20/%E5%8A%A0%E5%AF%86%E8%B4%A7%E5%B8%81%E4%BA%A4%E6%98%93%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">加密货币交易学习</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-11-20 16:43:35" itemprop="dateCreated datePublished" datetime="2024-11-20T16:43:35+08:00">2024-11-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-26 21:32:46" itemprop="dateModified" datetime="2024-11-26T21:32:46+08:00">2024-11-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BA%A4%E6%98%93/" itemprop="url" rel="index"><span itemprop="name">交易</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="交易的资金管理"><a href="#交易的资金管理" class="headerlink" title="交易的资金管理"></a>交易的资金管理</h2><p>来自于B站视频，推荐的每次投资额为总资金成本低的1%，准备实践一下。</p>
+<h2 id="赚币"><a href="#赚币" class="headerlink" title="赚币"></a>赚币</h2><h3 id="简单赚币"><a href="#简单赚币" class="headerlink" title="简单赚币"></a>简单赚币</h3><p>这种类似于债券，收益率低，但是风险小。</p>
+<h3 id="结构化产品"><a href="#结构化产品" class="headerlink" title="结构化产品"></a>结构化产品</h3>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/03/Caffine-Redi%E5%AE%9E%E7%8E%B0%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -265,7 +414,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-08-27 21:36:20" itemprop="dateModified" datetime="2024-08-27T21:36:20+08:00">2024-08-27</time>
+                <time title="修改时间：2024-08-27 22:19:33" itemprop="dateModified" datetime="2024-08-27T22:19:33+08:00">2024-08-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -297,7 +446,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">synfail but ack...</span><br></pre></td></tr></table></figure>
 <p>日志已经找不到了,但是大意是这样,从中可以知道同步失败但是向server发送了确认消息。  </p>
 <h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="DTLE-JOB"><a href="#DTLE-JOB" class="headerlink" title="DTLE JOB"></a>DTLE JOB</h3><h4 id="为什么用"><a href="#为什么用" class="headerlink" title="为什么用"></a>为什么用</h4><p>不知道,市面上没有看到其他主流的用来解决这个问题的方案,同时我也很难想到更好的方案去解决数据丢失的问题</p>
-<h4 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h4><p><img src="https://p0-xtjj-private.juejin.cn/tos-cn-i-73owjymdk6/450c063d770e40a2abb31a5e40dae875~tplv-73owjymdk6-jj-mark-v1:0:0:0:0:5o6Y6YeR5oqA5pyv56S-5Yy6IEAg5aWU6LeR55qE6Zi_55SYMQ==:q75.awebp?policy=eyJ2bSI6MywidWlkIjoiNTcxNDAxNzc5ODA2ODM5In0=&rk3s=f64ab15b&x-orig-authkey=f32326d3454f2ac7e96d3d06cdbb035152127018&x-orig-expires=1725369878&x-orig-sign=HeZsRxQLPDQWyh1B15yvcwDj80M=" alt="image.png"><br><strong>DTLE架构上包含两种角色的进程，Agent角色与Manager角色</strong>。Manager角色主要负责元数据信息存储，任务的接收和分发，Agent节点健康状态检测、故障转移。Agent主要负责数据读取，binlog解析，数据筛选、压缩、传输、回放等。</p>
+<h4 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h4><p><img src="https://raw.githubusercontent.com/aryangzhu/blogImage/master/dtle%E6%9E%B6%E6%9E%84.png"><br><strong>DTLE架构上包含两种角色的进程，Agent角色与Manager角色</strong>。Manager角色主要负责元数据信息存储，任务的接收和分发，Agent节点健康状态检测、故障转移。Agent主要负责数据读取，binlog解析，数据筛选、压缩、传输、回放等。</p>
 <h4 id="文件结构"><a href="#文件结构" class="headerlink" title="文件结构"></a>文件结构</h4><h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><h5 id="1-全局配置"><a href="#1-全局配置" class="headerlink" title="1. 全局配置"></a>1. 全局配置</h5><h5 id="2-配置dtle-job"><a href="#2-配置dtle-job" class="headerlink" title="2. 配置dtle job"></a>2. 配置dtle job</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">job <span class="string">&quot;tr_exam_answer&quot;</span> &#123;</span><br><span class="line">  datacenters = [<span class="string">&quot;dc1&quot;</span>]</span><br><span class="line"></span><br><span class="line">  group <span class="string">&quot;src&quot;</span> &#123;</span><br><span class="line">    task <span class="string">&quot;src&quot;</span> &#123;</span><br><span class="line">      driver = <span class="string">&quot;dtle&quot;</span></span><br><span class="line">      config &#123;</span><br><span class="line">        ReplicateDoDb = [&#123;</span><br><span class="line">          TableSchema = <span class="string">&quot;cloud_exam&quot;</span></span><br><span class="line">	  TableSchemaRename = <span class="string">&quot;cloud_report&quot;</span></span><br><span class="line">          Tables = [&#123;</span><br><span class="line">            TableName = <span class="string">&quot;tr_exam_answer&quot;</span></span><br><span class="line">	    ColumnMapFrom = [<span class="string">&quot;id&quot;</span>,<span class="string">&quot;exam_id&quot;</span>,<span class="string">&quot;account_id&quot;</span>,<span class="string">&quot;training_project_id&quot;</span>,<span class="string">&quot;start_time&quot;</span>,<span class="string">&quot;submit_time&quot;</span>,<span class="string">&quot;duration&quot;</span>,<span class="string">&quot;terminal_type&quot;</span>,<span class="string">&quot;score&quot;</span>,<span class="string">&quot;create_time&quot;</span>,<span class="string">&quot;create_by_id&quot;</span>,<span class="string">&quot;create_by_name&quot;</span>,<span class="string">&quot;update_time&quot;</span>,<span class="string">&quot;update_by_id&quot;</span>,<span class="string">&quot;update_by_name&quot;</span>,<span class="string">&quot;company_id&quot;</span>,<span class="string">&quot;org_id&quot;</span>,<span class="string">&quot;site_id&quot;</span>,<span class="string">&quot;state&quot;</span>]</span><br><span class="line">            Where = <span class="string">&quot;company_id is not null&quot;</span></span><br><span class="line">          &#125;]</span><br><span class="line">        &#125;]</span><br><span class="line">        GroupMaxSize = 1024 <span class="comment"># in bytes, not number of transactions</span></span><br><span class="line">        GroupTimeout = 100  <span class="comment"># in ms</span></span><br><span class="line">        DropTableIfExists = <span class="literal">false</span></span><br><span class="line">        Gtid = <span class="string">&quot;&quot;</span></span><br><span class="line">        ChunkSize = 2000</span><br><span class="line">        SrcConnectionConfig = &#123;</span><br><span class="line">          Host = <span class="string">&quot;192.168.1.48&quot;</span></span><br><span class="line">          Port = 3306</span><br><span class="line">          User = <span class="string">&quot;xxx&quot;</span></span><br><span class="line">          Password = <span class="string">&quot;xxx&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">		DestConnectionConfig = &#123;</span><br><span class="line">          Host = <span class="string">&quot;127.0.0.1&quot;</span></span><br><span class="line">          Port = 8066</span><br><span class="line">          User = <span class="string">&quot;xxx&quot;</span></span><br><span class="line">          Password = <span class="string">&quot;xxx&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    restart &#123; <span class="comment"># group or task level</span></span><br><span class="line">      interval = <span class="string">&quot;10m&quot;</span></span><br><span class="line">      attempts = 3</span><br><span class="line">      delay    = <span class="string">&quot;15s&quot;</span></span><br><span class="line">      mode     = <span class="string">&quot;delay&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  group <span class="string">&quot;dest&quot;</span> &#123;</span><br><span class="line">    task <span class="string">&quot;dest&quot;</span> &#123;</span><br><span class="line">      driver = <span class="string">&quot;dtle&quot;</span></span><br><span class="line">      config &#123;</span><br><span class="line">        DestType = <span class="string">&quot;mysql&quot;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># For a kafka job, do not set ConnectionConfig in dest task. Set KafkaConfig instead.</span></span><br><span class="line">        <span class="comment">#KafkaConfig = &#123;</span></span><br><span class="line">        <span class="comment">#  Topic = &quot;kafka1&quot;</span></span><br><span class="line">        <span class="comment">#  Brokers = [&quot;127.0.0.1:9192&quot;, &quot;127.0.0.1:9092&quot;]</span></span><br><span class="line">        <span class="comment">#  Converter = &quot;json&quot;</span></span><br><span class="line">        <span class="comment">#&#125;</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    restart &#123; <span class="comment"># group or task level</span></span><br><span class="line">      interval = <span class="string">&quot;30m&quot;</span></span><br><span class="line">      attempts = 3</span><br><span class="line">      delay    = <span class="string">&quot;15s&quot;</span></span><br><span class="line">      mode     = <span class="string">&quot;delay&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  reschedule &#123;</span><br><span class="line">    <span class="comment"># By default, nomad will unlimitedly reschedule a failed task.</span></span><br><span class="line">    <span class="comment"># We limit it to once per 30min here.</span></span><br><span class="line">    attempts = 1</span><br><span class="line">    interval = <span class="string">&quot;30m&quot;</span></span><br><span class="line">    unlimited = <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>之前公司的大佬用了dtle job来做数据的补发,每次发现缺数据之后,跑一下dtle的脚本来同步一下增量数据  </p>
 <h5 id="3-任务脚本"><a href="#3-任务脚本" class="headerlink" title="3. 任务脚本"></a>3. 任务脚本</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$1</span></span><br><span class="line"><span class="keyword">for</span> file <span class="keyword">in</span> `<span class="built_in">ls</span> <span class="variable">$1</span>`</span><br><span class="line">  <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$&#123;file##*.&#125;</span>&quot;</span> = <span class="string">&quot;hcl&quot;</span> ];</span><br><span class="line">    <span class="keyword">then</span></span><br><span class="line">      <span class="built_in">echo</span> <span class="variable">$1</span>/<span class="variable">$file</span></span><br><span class="line">      ./nomad_run.sh <span class="variable">$1</span>/<span class="variable">$file</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">  <span class="keyword">done</span></span><br></pre></td></tr></table></figure>
@@ -383,20 +532,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

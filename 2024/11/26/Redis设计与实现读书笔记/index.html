@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="本地缓存和分布式缓存本地缓存顾名思义就是和程序运行在同一台机器上的缓存,而分布式缓存则指的就是运行在多台机器上的缓存,这么讲只是狭义的理解。 本地缓存的适用场景适合存储一些不会经常改变的数据 分布式缓存的适用场景分布式缓存一般服务分布式服务的业务场景中,但是又不止局限于用作缓存,拿Redis来说举例,项目中需要统计各个站点的流量使用情况,但是有没有必要存储到数据库中,而只是用来展示 为什么需要二级">
+  <meta name="description" content="一点碎碎念最近因为面试，所以又拿出了《Redis设计与实现》这本书出来复习，其实23年的时候就已经刷过一遍这本书了，但是没有做笔记，今年发现做笔记和不做笔记差别还是挺大的。这两天也不想去复盘之前的面试(畏难心理还是已经皮实了，不想再继续下去了)，索性就写写笔记，当做一种娱乐了。 第一部分 数据结构与对象简单动态字符串(Simple Dynamic String)1234567891011struc">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Caffine+Redi实现二级缓存">
-<meta property="og:url" content="http://example.com/2024/08/03/Caffine-Redi%E5%AE%9E%E7%8E%B0%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98/index.html">
+<meta property="og:title" content="Redis设计与实现读书笔记">
+<meta property="og:url" content="http://example.com/2024/11/26/Redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="aryangzhu">
-<meta property="og:description" content="本地缓存和分布式缓存本地缓存顾名思义就是和程序运行在同一台机器上的缓存,而分布式缓存则指的就是运行在多台机器上的缓存,这么讲只是狭义的理解。 本地缓存的适用场景适合存储一些不会经常改变的数据 分布式缓存的适用场景分布式缓存一般服务分布式服务的业务场景中,但是又不止局限于用作缓存,拿Redis来说举例,项目中需要统计各个站点的流量使用情况,但是有没有必要存储到数据库中,而只是用来展示 为什么需要二级">
+<meta property="og:description" content="一点碎碎念最近因为面试，所以又拿出了《Redis设计与实现》这本书出来复习，其实23年的时候就已经刷过一遍这本书了，但是没有做笔记，今年发现做笔记和不做笔记差别还是挺大的。这两天也不想去复盘之前的面试(畏难心理还是已经皮实了，不想再继续下去了)，索性就写写笔记，当做一种娱乐了。 第一部分 数据结构与对象简单动态字符串(Simple Dynamic String)1234567891011struc">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-08-03T00:21:09.000Z">
-<meta property="article:modified_time" content="2024-08-11T08:30:12.910Z">
+<meta property="article:published_time" content="2024-11-26T13:30:31.000Z">
+<meta property="article:modified_time" content="2024-11-26T13:44:20.982Z">
 <meta property="article:author" content="aryangzhu">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2024/08/03/Caffine-Redi%E5%AE%9E%E7%8E%B0%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98/">
+<link rel="canonical" href="http://example.com/2024/11/26/Redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>Caffine+Redi实现二级缓存 | aryangzhu</title>
+  <title>Redis设计与实现读书笔记 | aryangzhu</title>
   
 
 
@@ -161,7 +161,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/03/Caffine-Redi%E5%AE%9E%E7%8E%B0%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/26/Redis%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -174,7 +174,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Caffine+Redi实现二级缓存
+          Redis设计与实现读书笔记
         </h1>
 
         <div class="post-meta">
@@ -183,16 +183,10 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2024-08-03 08:21:09" itemprop="dateCreated datePublished" datetime="2024-08-03T08:21:09+08:00">2024-08-03</time>
+              <time title="创建时间：2024-11-26 21:30:31 / 修改时间：21:44:20" itemprop="dateCreated datePublished" datetime="2024-11-26T21:30:31+08:00">2024-11-26</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-08-11 16:30:12" itemprop="dateModified" datetime="2024-08-11T16:30:12+08:00">2024-08-11</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -214,11 +208,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="本地缓存和分布式缓存"><a href="#本地缓存和分布式缓存" class="headerlink" title="本地缓存和分布式缓存"></a>本地缓存和分布式缓存</h2><p>本地缓存顾名思义就是和程序运行在同一台机器上的缓存,而分布式缓存则指的就是运行在多台机器上的缓存,这么讲只是狭义的理解。</p>
-<h2 id="本地缓存的适用场景"><a href="#本地缓存的适用场景" class="headerlink" title="本地缓存的适用场景"></a>本地缓存的适用场景</h2><p>适合存储一些不会经常改变的数据</p>
-<h2 id="分布式缓存的适用场景"><a href="#分布式缓存的适用场景" class="headerlink" title="分布式缓存的适用场景"></a>分布式缓存的适用场景</h2><p>分布式缓存一般服务分布式服务的业务场景中,但是又不止局限于用作缓存,拿Redis来说举例,项目中需要统计各个站点的流量使用情况,但是有没有必要存储到数据库中,而只是用来展示</p>
-<h2 id="为什么需要二级缓存甚至三级缓存"><a href="#为什么需要二级缓存甚至三级缓存" class="headerlink" title="为什么需要二级缓存甚至三级缓存"></a>为什么需要二级缓存甚至三级缓存</h2><p>我个人理解多级缓存的出现是为了服务于对接口响应速度有要求的接口,例如c端的查询接口,Redis也是有开销的。项目的考试业务中有缓存预先存储,然后正式考试再将学生和试卷出题进行绑定,学生请求组卷这个接口的请求时间要求响应要非常快。</p>
-
+        <h2 id="一点碎碎念"><a href="#一点碎碎念" class="headerlink" title="一点碎碎念"></a>一点碎碎念</h2><p>最近因为面试，所以又拿出了《Redis设计与实现》这本书出来复习，其实23年的时候就已经刷过一遍这本书了，但是没有做笔记，今年发现做笔记和不做笔记差别还是挺大的。这两天也不想去复盘之前的面试(畏难心理还是已经皮实了，不想再继续下去了)，索性就写写笔记，当做一种娱乐了。</p>
+<h2 id="第一部分-数据结构与对象"><a href="#第一部分-数据结构与对象" class="headerlink" title="第一部分 数据结构与对象"></a>第一部分 数据结构与对象</h2><h3 id="简单动态字符串-Simple-Dynamic-String"><a href="#简单动态字符串-Simple-Dynamic-String" class="headerlink" title="简单动态字符串(Simple Dynamic String)"></a>简单动态字符串(Simple Dynamic String)</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span>&#123;</span></span><br><span class="line">    <span class="comment">//记录buf数组中已使用字节的数量</span></span><br><span class="line">    <span class="comment">//等于SDS所保存字符串的长度</span></span><br><span class="line">    <span class="type">int</span> len;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//记录buf数组中未使用字节的数量</span></span><br><span class="line">    <span class="type">int</span> <span class="built_in">free</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//字节数组，用于保存字符串</span></span><br><span class="line">    <span class="type">char</span> buf[];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="C语言的缺陷-为什么要自己实现SDS"><a href="#C语言的缺陷-为什么要自己实现SDS" class="headerlink" title="C语言的缺陷(为什么要自己实现SDS)"></a>C语言的缺陷(为什么要自己实现SDS)</h4><ol>
+<li>常数级别的时间复杂度来获取字符串长度</li>
+<li>杜绝缓冲区溢出</li>
+<li>减少修改字符串带来的内存重新分配次数</li>
+</ol>
+<h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><h3 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h3><h3 id="跳跃表"><a href="#跳跃表" class="headerlink" title="跳跃表"></a>跳跃表</h3><h3 id="整数集合"><a href="#整数集合" class="headerlink" title="整数集合"></a>整数集合</h3><h3 id="压缩列表"><a href="#压缩列表" class="headerlink" title="压缩列表"></a>压缩列表</h3><h3 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h3>
     </div>
 
     
@@ -236,13 +233,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2024/08/02/Canal%E5%AE%9E%E8%B7%B5/" rel="prev" title="Canal实践">
-      <i class="fa fa-chevron-left"></i> Canal实践
+    <a href="/2024/11/20/%E5%8A%A0%E5%AF%86%E8%B4%A7%E5%B8%81%E4%BA%A4%E6%98%93%E5%AD%A6%E4%B9%A0/" rel="prev" title="加密货币交易学习">
+      <i class="fa fa-chevron-left"></i> 加密货币交易学习
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2024/11/20/%E5%8A%A0%E5%AF%86%E8%B4%A7%E5%B8%81%E4%BA%A4%E6%98%93%E5%AD%A6%E4%B9%A0/" rel="next" title="加密货币交易学习">
-      加密货币交易学习 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -301,7 +295,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E7%BC%93%E5%AD%98%E5%92%8C%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98"><span class="nav-number">1.</span> <span class="nav-text">本地缓存和分布式缓存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E7%BC%93%E5%AD%98%E7%9A%84%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">本地缓存的适用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E7%9A%84%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">3.</span> <span class="nav-text">分布式缓存的适用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98%E7%94%9A%E8%87%B3%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98"><span class="nav-number">4.</span> <span class="nav-text">为什么需要二级缓存甚至三级缓存</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E7%82%B9%E7%A2%8E%E7%A2%8E%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">一点碎碎念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.</span> <span class="nav-text">第一部分 数据结构与对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2-Simple-Dynamic-String"><span class="nav-number">2.1.</span> <span class="nav-text">简单动态字符串(Simple Dynamic String)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#C%E8%AF%AD%E8%A8%80%E7%9A%84%E7%BC%BA%E9%99%B7-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%87%AA%E5%B7%B1%E5%AE%9E%E7%8E%B0SDS"><span class="nav-number">2.1.1.</span> <span class="nav-text">C语言的缺陷(为什么要自己实现SDS)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8"><span class="nav-number">2.2.</span> <span class="nav-text">链表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E5%85%B8"><span class="nav-number">2.3.</span> <span class="nav-text">字典</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%B3%E8%B7%83%E8%A1%A8"><span class="nav-number">2.4.</span> <span class="nav-text">跳跃表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E6%95%B0%E9%9B%86%E5%90%88"><span class="nav-number">2.5.</span> <span class="nav-text">整数集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8"><span class="nav-number">2.6.</span> <span class="nav-text">压缩列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.7.</span> <span class="nav-text">对象</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
